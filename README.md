@@ -18,10 +18,10 @@ cd pyntdsutil && python3 -m pipx install .
 [*] Dumping NTDS.dit with ntdsutil.exe
 [*] NTDS.dit successfully dumped
 [*] Downloading NTDS.dit, SYSTEM, and SECURITY
-[*] Output NTDS dump files to dump_2023-10-08_pyntdsutil
+[*] Output NTDS dump files to dump_2023-10-08_23:36:16_pyntdsutil
 [*] Deleted artifacts on target domain controller
 
-# ls dump_pyntdsutil_2023-10-08 
+# ls dump_2023-10-08_23:36:16_pyntdsutil
 NTDS.dit  SECURITY  SYSTEM
 ```
 
