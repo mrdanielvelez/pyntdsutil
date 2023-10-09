@@ -25,7 +25,7 @@ cd pyntdsutil && python3 -m pipx install .
 NTDS.dit  SECURITY  SYSTEM
 ```
 
-## Fast Offline Dump with [gosecretsdump](https://github.com/C-Sto/gosecretsdump)
+## Fast Offline Dump via [Gosecretsdump](https://github.com/C-Sto/gosecretsdump) (installed by default via [*HACKPREP*](https://www.github.com/mrdanielvelez/hackprep))
 
 ```javascript
 # go install github.com/C-Sto/gosecretsdump@latest
