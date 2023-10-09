@@ -386,7 +386,7 @@ class Ntdsutil:
         commandFileExtension = ['.log', '.txt', '.bak', '.xml', '.dmp', '.dtd', '.sys']
         self.command_file = "C:\\Windows\\system32\\" + commandFileName + random.choice(commandFileExtension)
         current_date = datetime.now()
-        formatted_date = current_date.strftime('%Y-%m-%d')
+        formatted_date = current_date.strftime('%Y-%m-%d_%T')
         self.dir_result = f"dump_{formatted_date}_pyntdsutil"
         if options.output is not None and options.output != '':
             self.dir_result = options.output
