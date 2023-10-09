@@ -7,7 +7,7 @@ Dump NTDS.dit remotely with ntdsutil.exe via a modified version of atexec.py.
 ```ruby
 python3 -m pip install pipx && python3 -m pipx ensurepath
 git clone https://github.com/mrdanielvelez/pyntdsutil
-cd pyntdsutil && pipx install .
+cd pyntdsutil && python3 -m pipx install .
 ```
 
 ## Example Output
