@@ -67,7 +67,7 @@ parser.add_argument('-codec', action='store', help='Sets encoding used (codec) f
                       'https://docs.python.org/3/library/codecs.html#standard-encodings and then execute pyntdsutil'
                       'again with -codec and the corresponding codec ' % CODEC)
 
-parser.add_argument('-output', action='store', help='Output directory to store dumped file')
+parser.add_argument('-output', action='store', help='Output directory for NTDS dump')
 
 options = parser.parse_args()
 
