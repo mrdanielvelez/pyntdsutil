@@ -209,11 +209,11 @@ class TSCH_EXEC:
         random_date_str = random_datetime()
     
         dump_directories_task = [
+            {"reg_path": f"C:\\PerfLogs\\{tmpFileName}",
+             "share_path": f"PerfLogs\\{tmpFileName}"
+            },
             {"reg_path": f"%%programdata%%\\Microsoft\\Windows\\Caches\\{tmpFileName}",
              "share_path": f"ProgramData\\Microsoft\\Windows\\Caches\\{tmpFileName}"
-            },
-            {"reg_path": f"C:\\Program Files\\Common Files\\{tmpFileName}",
-             "share_path": f"Program Files\\Common Files\\{tmpFileName}"
             },
             {"reg_path": f"%%windir%%\\Logs\\CBS\\{tmpFileName}",
              "share_path": f"Windows\\Logs\\CBS\\{tmpFileName}"
@@ -391,8 +391,8 @@ class Ntdsutil:
         self._is_admin = None
 
         dump_directories_ntds = [
+            "C:\\PerfLogs\\",
             "C:\\ProgramData\\Microsoft\\Windows\\Caches\\",
-            "C:\\Program Files\\Common Files\\",
             "C:\\Windows\\Logs\\CBS\\"
         ]
         
