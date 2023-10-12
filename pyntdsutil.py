@@ -407,7 +407,7 @@ class Ntdsutil:
         self.command_file = rdd_ntds + commandFileName + random.choice(commandFileExtension)
         current_date = datetime.now()
         formatted_date = current_date.strftime('%Y-%m-%d_%T')
-        self.dir_result = f"dump_{formatted_date}_pyntdsutil"
+        self.dir_result = f"pyntdsutil_{formatted_date}"
         if options.output is not None and options.output != '':
             self.dir_result = options.output
 
@@ -497,7 +497,7 @@ class Ntdsutil:
                 atsvc_exec.play(self.target.address)
                 logging.debug('Deleted %s command input file for ntdsutil.exe' % (self.command_file))
                 logging.debug('Deleted %s%s dump directory on the %s share' % (self.tmp_dir, self.dump_location, self.share))
-                logging.info('Deleted artifacts on target domain controller')
+                logging.info('Deleted artifacts on %s', self.target.address)
             except Exception as e:
                 logging.error('Error deleting {} directory on share {}: {}'.format(self.dump_location, self.share, e))
         else:
