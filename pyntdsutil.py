@@ -460,9 +460,9 @@ class Ntdsutil:
                 if d.get_longname() == 'ntds.dit':
                     dumped = True
             if dumped:
-                logging.info("NTDS.dit successfully dumped")
+                logging.info("Successfully dumped NTDS.dit")
             else:
-                logging.error("NTDS.dit not dumped. Exiting...")
+                logging.error("Unable to dump NTDS.dit. Exiting...")
                 sys.exit(1)
 
             logging.info("Downloading NTDS.dit, SYSTEM, and SECURITY")
