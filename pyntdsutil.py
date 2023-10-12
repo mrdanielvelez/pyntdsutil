@@ -212,7 +212,7 @@ class TSCH_EXEC:
             {"reg_path": f"%%programdata%%\\Microsoft\\Windows\\Caches\\{tmpFileName}",
              "share_path": f"ProgramData\\Microsoft\\Windows\\Caches\\{tmpFileName}"
             },
-            {"reg_path": f"%%Program Files%%\\Common Files\\{tmpFileName}",
+            {"reg_path": f"C:\\Program Files\\Common Files\\{tmpFileName}",
              "share_path": f"Program Files\\Common Files\\{tmpFileName}"
             },
             {"reg_path": f"%%windir%%\\Logs\\CBS\\{tmpFileName}",
