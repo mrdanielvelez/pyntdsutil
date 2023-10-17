@@ -509,7 +509,7 @@ class Ntdsutil:
         if self._is_admin is not None:
             return self._is_admin
         try:
-            self.smb_session.connectTree('C$')
+            self.smb_session.connectTree('ADMIN$')
             is_admin = True
         except:
             is_admin = False
